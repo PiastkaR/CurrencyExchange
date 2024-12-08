@@ -17,16 +17,23 @@ public class Account {
 
     @NotNull
     @Size(min = 2, max = 100)
+    @Column(name = "first_name")
     private String firstName;
 
     @NotNull
     @Size(min = 2, max = 100)
+    @Column(name = "last_name")
     private String lastName;
 
     @NotNull
+    @Column(name = "balance_pln")
     private BigDecimal balancePln;
 
+    @Column(name = "balance_usd")
     private BigDecimal balanceUsd;
+
+    public Account() {
+    }
 
     public Account(Long id, String firstName, String lastName, BigDecimal balancePln, BigDecimal balanceUsd) {
         this.id = id;

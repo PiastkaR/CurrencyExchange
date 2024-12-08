@@ -2,10 +2,12 @@ package com.nn.domain.service;
 
 import com.nn.domain.model.Account;
 import com.nn.domain.model.AccountBuilder;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+@Service
 public class ExchangeService {
 
     public Account exchangeUsdToPln(Account account, BigDecimal amount, BigDecimal rate) {

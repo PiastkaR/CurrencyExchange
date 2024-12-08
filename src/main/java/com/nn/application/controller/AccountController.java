@@ -4,6 +4,7 @@ import com.nn.application.service.AccountService;
 import com.nn.domain.model.Account;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -43,9 +44,9 @@ public class AccountController {
         return ResponseEntity.ok(account);
     }
 
-    @PostMapping("/{accountId}/exchange-pln-to-usd")
+    @PostMapping("/{accountId}/exchange/pln-to-usd")
     public ResponseEntity<Account> exchangePlnToUsd(
-            @RequestParam @NotNull Long accountId,
+            @PathVariable @NotNull Long accountId,
             @RequestParam BigDecimal amount
     ) {
         Account result = accountService.exchangePlnToUsd(accountId, amount);
@@ -53,7 +54,7 @@ public class AccountController {
         return ResponseEntity.accepted().body(result);
     }
 
-    @PostMapping("//{accountId}/exchange-pln-to-usd")
+    @PostMapping("/{accountId}/exchange/usd-to-pln")
     public ResponseEntity<Account> exchangeUsdToPln(
             @RequestParam @NotNull Long accountId,
             @RequestParam BigDecimal amount
@@ -67,6 +68,9 @@ public class AccountController {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     Map<String, String> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
         return exception.getBindingResult().getFieldErrors().stream()
-                .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
+                .collect(Collectors.toMap(
+                        FieldError::getField,
+                        DefaultMessageSourceResolvable::getDefaultMessage
+                ));
     }
 }
