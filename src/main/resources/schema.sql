@@ -1,0 +1,7 @@
+CREATE TABLE accounts(
+id SERIAL PRIMARY KEY,
+first_name VARCHAR(255) NOT NULL,
+last_name VARCHAR(255) NOT NULL,
+balance_pln DECIMAL (19,2) NOT NULL,
+balance_usd DECIMAL (19,2) NOT NULL DEFAULT 0
+);
