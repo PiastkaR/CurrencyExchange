@@ -35,5 +35,5 @@ curl -X POST "http://localhost:8080/api/accounts/1/exchange/pln-to-usd" \
 Exchange USD -> PLN:
 ```sh
 curl -X POST "http://localhost:8080/api/accounts/1/exchange/usd-to-pln" \
--d "amount=50.00"
+-d "amount=24.79"
 ```

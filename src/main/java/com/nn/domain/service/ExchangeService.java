@@ -9,14 +9,13 @@ import java.math.RoundingMode;
 
 @Service
 public class ExchangeService {
-
     public Account exchangeUsdToPln(Account account, BigDecimal amount, BigDecimal rate) {
         BigDecimal amountInPln = amount.multiply(rate);
-        if (account.getBalancePln().compareTo(amount) >= 0) {
+        if (account.getBalanceUsd().compareTo(amount) >= 0) {
             return new AccountBuilder()
                     .withAccount(account)
-                    .withBalancePln(account.getBalancePln().add(amountInPln))
-                    .withBalanceUsd(account.getBalanceUsd().subtract(amount))
+                    .withBalancePln(account.getBalancePln().add(amountInPln).setScale(2, java.math.RoundingMode.HALF_UP))
+                    .withBalanceUsd(account.getBalanceUsd().subtract(amount).setScale(2, java.math.RoundingMode.HALF_UP))
                     .build();
 
         } else {
@@ -29,8 +28,8 @@ public class ExchangeService {
         if (account.getBalancePln().compareTo(amount) >= 0) {
             return new AccountBuilder()
                     .withAccount(account)
-                    .withBalancePln(account.getBalancePln().subtract(amount))
-                    .withBalanceUsd(account.getBalanceUsd().add(amountInUsd))
+                    .withBalancePln(account.getBalancePln().subtract(amount).setScale(2, java.math.RoundingMode.HALF_UP))
+                    .withBalanceUsd(account.getBalanceUsd().add(amountInUsd).setScale(2, java.math.RoundingMode.HALF_UP))
                     .build();
 
         } else {

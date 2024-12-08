@@ -56,7 +56,7 @@ public class AccountController {
 
     @PostMapping("/{accountId}/exchange/usd-to-pln")
     public ResponseEntity<Account> exchangeUsdToPln(
-            @RequestParam @NotNull Long accountId,
+            @PathVariable @NotNull Long accountId,
             @RequestParam BigDecimal amount
     ) {
         Account result = accountService.exchangeUsdToPln(accountId, amount);
