@@ -42,9 +42,10 @@ public class AccountBuilder {
         this.balanceUsd = account.getBalanceUsd();
         return this;
     }
-    //TODO: obsluzyc generowanie randomowych wartosci i domyslnej w postaci 0 dla usd.
+
     public Account build() {
         return new Account(id, firstName, lastName, balancePln, balanceUsd);
     }
+
 }
 

@@ -37,3 +37,13 @@ Exchange USD -> PLN:
 curl -X POST "http://localhost:8080/api/accounts/1/exchange/usd-to-pln" \
 -d "amount=24.79"
 ```
+
+Expected correct response from NBP API:
+`
+ <200 OK OK, {"table":"A","currency":"dolar amerykański","code":"USD","rates":[{"no":"237/
+A/NBP/2024","effectiveDate":"2024-12-06","mid":4.0341}]},
+ [Date:"Sun, 08 Dec 2024 11:31:10 GMT", Cache-Control:"no-cache", Pragma:"no-cache",
+ Content-Length:"134", Content-Type:"application/json; charset=utf-8",
+ Expires:"-1", ETag:""E+/A5Kh6Hop01JvV7Cj3LwBZ3erYAzneitfNrw7mxmY="",
+ Set-Cookie:"ee3la5eizeiY4Eix=jei1Xah3; path=/"]>
+`

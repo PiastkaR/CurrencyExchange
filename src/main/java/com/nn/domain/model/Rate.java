@@ -10,4 +10,5 @@ public record Rate(String no, String effectiveDate, String mid) implements Seria
 
     @Serial
     private static final long serialVersionUID = 2116309166082083744L;
+
 }

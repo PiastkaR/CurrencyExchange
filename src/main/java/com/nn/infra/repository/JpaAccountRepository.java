@@ -11,4 +11,5 @@ public interface JpaAccountRepository extends CrudRepository<Account, Long> {
     default Account getById(Long id) {
         return findById(id).orElseThrow(() -> new NotFoundException(("Account [" + id + "] not found.")));
     }
+
 }

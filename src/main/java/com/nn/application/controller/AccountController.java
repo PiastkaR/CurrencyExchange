@@ -26,6 +26,9 @@ public class AccountController {
         this.accountService = accountService;
     }
 
+    /**
+     * @Param balancePln: it is assumed to be compulsory for Polish origin clients, might be easily changed/extended
+     * */
     @PostMapping
     public ResponseEntity<Account> createAccount(
             @RequestParam @Valid String firstName,
@@ -73,4 +76,5 @@ public class AccountController {
                         DefaultMessageSourceResolvable::getDefaultMessage
                 ));
     }
+
 }

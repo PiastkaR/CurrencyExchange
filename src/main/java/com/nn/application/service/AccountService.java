@@ -12,7 +12,6 @@ import java.math.BigDecimal;
 
 @Service
 public class AccountService {
-
     private final JpaAccountRepository jpaAccountRepository;//TODO: change name without 'Jpa'
     private final NBPApiService nbpApiService;
     private final ExchangeService exchangeService;
@@ -56,4 +55,5 @@ public class AccountService {
 
         return jpaAccountRepository.save(account);
     }
+
 }

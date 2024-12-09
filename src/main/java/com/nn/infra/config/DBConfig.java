@@ -32,4 +32,5 @@ public class DBConfig {
 
         return transactionManager;
     }
+
 }

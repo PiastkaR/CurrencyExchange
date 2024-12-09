@@ -11,10 +11,29 @@ sourceCompatibility = '21'
 
 repositories {
     mavenCentral()
+    maven { url "https://repo.spring.io/release" }
 }
 
-bootJar{
+bootJar {
     archiveFileName = 'CurrencyExchange.jar'
+}
+
+sourceSets {
+    integrationTest {
+        compileClasspath += sourceSets.main.output + sourceSets.test.output
+        runtimeClasspath += sourceSets.main.output + sourceSets.test.output
+        groovy {
+            srcDirs = ['src/integrationTest/groovy']
+        }
+        resources {
+            srcDirs = ['src/integrationTest/resources']
+        }
+    }
+}
+
+configurations {
+    integrationTestImplementation.extendsFrom testImplementation
+    integrationTestRuntimeOnly.extendsFrom testRuntimeOnly
 }
 
 dependencies {
@@ -22,14 +41,24 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.liquibase:liquibase-core'
-//    implementation('org.springframework.boot:spring-boot-starter-log4j2')
     runtimeOnly 'org.postgresql:postgresql'
-//    testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.spockframework:spock-core:2.4-M1-groovy-4.0'
-//    testImplementation 'org.spockframework:spock-spring:2.4-M4-groovy-4.0'
+    testImplementation 'com.github.tomakehurst:wiremock-jre8:2.35.1'
+    integrationTestImplementation 'org.springframework.cloud:spring-cloud-starter-contract-stub-runner:4.0.5'
 }
 
 test {
     useJUnitPlatform()
 }
+
+task integrationTest(type: Test) {
+    description = "Runs the integration tests."
+    group = "verification"
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    shouldRunAfter test
+    useJUnitPlatform()
+}
+
+check.dependsOn integrationTest

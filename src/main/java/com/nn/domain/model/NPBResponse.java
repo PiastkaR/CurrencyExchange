@@ -11,5 +11,4 @@ public record NPBResponse(String table, String currency, String codes, Rate[] ra
     @Serial
     private static final long serialVersionUID = -3866504751211379983L;
 
-
 }
