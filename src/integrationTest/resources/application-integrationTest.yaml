@@ -1,3 +1,4 @@
+#TODO: add setup for testcontainers on parameters
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/mydb
@@ -10,5 +11,3 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
-liquibase:
-  change-log: classpath:/db/changelog/db.changelog-master.yaml
