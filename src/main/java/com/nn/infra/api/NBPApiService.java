@@ -1,8 +1,10 @@
 package com.nn.infra.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nn.domain.model.NPBResponse;
+import com.nn.domain.model.NBPResponse;
+import com.nn.domain.model.NBPResponseBuilder;
 import com.nn.domain.model.Rate;
+import com.nn.utils.ListUtils;
+import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -15,7 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.math.BigDecimal;
 import java.net.URI;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,16 +26,25 @@ public class NBPApiService {
     private final Logger logger = LoggerFactory.getLogger(NBPApiService.class);
     private static final String NBP_API_URL = "http://api.nbp.pl/api/exchangerates/rates/A/USD";
     private static final String REQUEST_TRACE = "Requesting NBP rate for: [{}]";
-    private final ObjectMapper objectMapper;
     private final RestTemplate restTemplate;
 
-    public NBPApiService(ObjectMapper objectMapper, RestTemplate restTemplate) {
-        this.objectMapper = objectMapper;
+    public NBPApiService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
-
     public BigDecimal getExchangeRate() {
+        if (ListUtils.isNotEmpty(handleNBPExchange().rates())) {
+            Optional<Rate> optionalRate = handleNBPExchange().rates().stream()
+                    .findFirst();
+
+            return optionalRate.map(rate -> new BigDecimal(rate.mid()))
+                    .orElse(BigDecimal.ZERO);
+        }
+
+        return BigDecimal.ZERO;
+    }
+
+    protected NBPResponse handleNBPExchange(){
         URI uri = UriComponentsBuilder.fromHttpUrl(NBP_API_URL)
                 .build()
                 .toUri();
@@ -42,15 +53,13 @@ public class NBPApiService {
                 .build();
         logger.trace(REQUEST_TRACE, NBP_API_URL);
 
-        ResponseEntity<NPBResponse> response = restTemplate.exchange(requestEntity,NPBResponse.class);
+        ResponseEntity<NBPResponse> response = restTemplate.exchange(requestEntity, NBPResponse.class);
 
-        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-            Optional<Rate> optionalRate = Arrays.stream(response.getBody().rates())
-                    .findFirst();
-            return optionalRate.map(rate -> new BigDecimal(rate.mid())).orElse(BigDecimal.ZERO);
-        }
-
-        return BigDecimal.ZERO;
+        return Optional.ofNullable(response.getBody())
+                .orElseGet(() -> {
+                    logger.warn("Response body is null for URI: {}", uri);
+                    return supplyWithEmptyResponse();
+                });
     }
 
     private static HttpHeaders prepareHeaders() {
@@ -58,6 +67,15 @@ public class NBPApiService {
         headers.setAccept(List.of(MediaType.APPLICATION_JSON, MediaType.TEXT_HTML));
 
         return headers;
+    }
+
+    private NBPResponse supplyWithEmptyResponse(){
+        return new NBPResponseBuilder()
+                .withTable(Strings.EMPTY)
+                .withCurrency(Strings.EMPTY)
+                .withCodes(Strings.EMPTY)
+                .withRates(Collections.emptyList())
+                .build();
     }
 
 }
