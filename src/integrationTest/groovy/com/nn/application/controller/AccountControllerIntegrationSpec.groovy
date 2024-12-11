@@ -1,15 +1,5 @@
 package com.nn.application.controller
-
-import com.nn.CurrencyExchangeIntegrationSpec
-import com.nn.domain.model.Account
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.web.server.LocalServerPort
-import org.springframework.util.LinkedMultiValueMap
-import org.springframework.web.client.RestTemplate
-import spock.lang.Shared
-
-import static org.springframework.http.RequestEntity.post
-
+/**
 class AccountControllerIntegrationSpec extends CurrencyExchangeIntegrationSpec {
 
     @LocalServerPort
@@ -83,5 +73,7 @@ class AccountControllerIntegrationSpec extends CurrencyExchangeIntegrationSpec {
         exchange.body.balancePln < new BigDecimal("1000.00")
         exchange.body.balanceUsd > BigDecimal.ZERO
     }
-**/
+
 }
+
+ **/

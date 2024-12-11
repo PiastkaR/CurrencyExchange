@@ -4,7 +4,7 @@ Hi! Build me like this:
 ```sh
 ./gradlew build
 ```
-
+Please make sure that your `docker running` before  compose.
 ```sh
 docker-comopse up --build
 ```
@@ -37,6 +37,9 @@ Exchange USD -> PLN:
 curl -X POST "http://localhost:8080/api/accounts/1/exchange/usd-to-pln" \
 -d "amount=24.79"
 ```
+## IMPORTANT
+Please note that docker container will keep the data for app reset, however destroying the container will result in data loss.
+In order to have full control over data retention a cron job on EC2 instance with dump is highly recommended.
 
 Expected correct response from NBP API:
 `
