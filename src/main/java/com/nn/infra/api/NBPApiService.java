@@ -14,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.math.BigDecimal;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -24,14 +25,16 @@ public class NBPApiService {
     private static final String NBP_API_URL = "http://api.nbp.pl/api/exchangerates/rates/A/USD";
     private static final String REQUEST_TRACE = "Requesting NBP rate for: [{}]";
     private final ObjectMapper objectMapper;
+    private final RestTemplate restTemplate;
 
-    public NBPApiService(ObjectMapper objectMapper) {
+    public NBPApiService(ObjectMapper objectMapper, RestTemplate restTemplate) {
         this.objectMapper = objectMapper;
+        this.restTemplate = restTemplate;
     }
 
 
     public BigDecimal getExchangeRate() {
-        java.net.URI uri = UriComponentsBuilder.fromHttpUrl(NBP_API_URL)
+        URI uri = UriComponentsBuilder.fromHttpUrl(NBP_API_URL)
                 .build()
                 .toUri();
         RequestEntity<Void> requestEntity = RequestEntity.get(uri)
@@ -39,7 +42,6 @@ public class NBPApiService {
                 .build();
         logger.trace(REQUEST_TRACE, NBP_API_URL);
 
-        RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<NPBResponse> response = restTemplate.exchange(requestEntity,NPBResponse.class);
 
         if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
