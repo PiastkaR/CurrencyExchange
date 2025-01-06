@@ -32,12 +32,14 @@ public class AccountController {
      * */
     @PostMapping
     public ResponseEntity<AccountDto> createAccount(@RequestBody @Valid CreateAccountRequest createAccountRequest) {
-        AccountDto resultDto = AccountMapper.toDto(createAccountRequest);
+        Account account = accountService.createAccount(createAccountRequest);
+        AccountDto resultDto = AccountMapper.toDto(account);
+
         return ResponseEntity.created(URI.create("/api/accounts/" + resultDto.getId())).body(resultDto);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Account> getAccount(@PathVariable Long id) {
+    public ResponseEntity<AccountDto> getAccount(@PathVariable Long id) {
         Account account = accountService.getAccount(id);
         AccountDto accountDto = AccountMapper.toDto(account);
 
