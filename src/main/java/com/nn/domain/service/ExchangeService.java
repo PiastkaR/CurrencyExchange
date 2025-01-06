@@ -22,14 +22,6 @@ public class ExchangeService {
         this.exchangeRateProvider = exchangeRateProvider;
     }
 
-    public Account exchangeUsdToPln(Account account, BigDecimal amount, BigDecimal rate) {
-        return exchange(account, amount, rate, USD_EXCEPTION_MESSAGE, true);
-    }
-
-    public Account exchangePlnToUsd(Account account, BigDecimal amount, BigDecimal rate) {
-        return exchange(account, amount, rate, PLN_EXCEPTION_MESSAGE, false);
-    }
-
     public Account exchange(Account account, BigDecimal amount, String fromCurrency, String toCurrency) {
         BigDecimal rate = exchangeRateProvider.getExchangeRate(fromCurrency, toCurrency);
         BigDecimal amountInTargetCurrency = fromCurrency.equals("USD") ? amount.multiply(rate) : amount.divide(rate, 2, RoundingMode.HALF_UP);

@@ -63,4 +63,25 @@ public class Account {
         return balanceUsd;
     }
 
+    public void setBalanceUsd(BigDecimal balanceUsd) {
+
+
+        this.balanceUsd = balanceUsd;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setFirstName(@NotNull @Size(min = 2, max = 100) String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(@NotNull @Size(min = 2, max = 100) String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setBalancePln(@NotNull BigDecimal balancePln) {
+        this.balancePln = balancePln;
+    }
 }

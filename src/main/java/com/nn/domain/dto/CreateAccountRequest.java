@@ -1,8 +1,12 @@
 package com.nn.domain.dto;
 
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 import java.math.BigDecimal;
 
-public class CreateAccoutnRequest {
+public class CreateAccountRequest {
     @NotNull
     @Size(min = 1, max = 50)
     private String firstName;

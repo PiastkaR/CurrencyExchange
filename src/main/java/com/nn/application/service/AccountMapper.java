@@ -1,10 +1,11 @@
 package com.nn.application.service;
 
+import com.nn.domain.dto.CreateAccountRequest;
 import com.nn.domain.model.Account;
 import com.nn.domain.dto.AccountDto;
 
 public class AccountMapper {
-    public static AccountDto toDto(Account account) {
+    public static AccountDto toDto(CreateAccountRequest account) {
         AccountDto dto = new AccountDto();
         dto.setId(account.getId());
         dto.setFirstName(account.getFirstName());
