@@ -13,29 +13,48 @@ docker-comopse up --build
 Create account:
 ```sh
 curl -X POST "http://localhost:8080/api/accounts" \
--d "firstName=Rafal" \
--d "lastName=Piastka" \
--d "balancePln=1000.00"
+    -H "Content-Type: application/json" \
+    -d '{
+        "firstName": "Rafal",
+        "lastName": "Piastka",
+        "balancePln": 1000.00
+    }'
 ```
 
 One can expect following response:
-`{"id":1,"firstName":"Rafal","lastName":"Piastka","balancePln":1000.00,"balanceUsd":0}`
+`{
+"id": 1,
+"firstName": "Rafal",
+"lastName": "Piastka",
+"balancePln": 1000.00,
+"balanceUsd": 0
+}`
 
 Get account:
 ```sh
-curl -X GET "http://localhost:8080/api/accounts/1" 
+curl -X GET "http://localhost:8080/api/accounts/1"
 ```
 
 Exchange PLN -> USD:
 ```sh
-curl -X POST "http://localhost:8080/api/accounts/1/exchange/pln-to-usd" \
--d "amount=100.00"
+curl -X POST "http://localhost:8080/api/accounts/1/exchange" \
+    -H "Content-Type: application/json" \
+    -d '{
+        "amount": 100.00,
+        "fromCurrency": "PLN",
+        "toCurrency": "USD"
+    }'
 ```
 
 Exchange USD -> PLN:
 ```sh
-curl -X POST "http://localhost:8080/api/accounts/1/exchange/usd-to-pln" \
--d "amount=24.79"
+curl -X POST "http://localhost:8080/api/accounts/1/exchange" \
+    -H "Content-Type: application/json" \
+    -d '{
+        "amount": 24.79,
+        "fromCurrency": "USD",
+        "toCurrency": "PLN"
+    }'
 ```
 ## IMPORTANT
 Please note that docker container will keep the data for app reset, however destroying the container will result in data loss.

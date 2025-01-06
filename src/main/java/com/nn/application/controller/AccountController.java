@@ -1,7 +1,10 @@
 package com.nn.application.controller;
 
+import com.nn.application.service.AccountMapper;
 import com.nn.application.service.AccountService;
+import com.nn.domain.dto.CreateAccountRequest;
 import com.nn.domain.model.Account;
+import com.nn.domain.dto.AccountDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
@@ -36,41 +39,29 @@ public class AccountController {
      * @Param balancePln: it is assumed to be compulsory for Polish origin clients, might be easily changed/extended
      * */
     @PostMapping
-    public ResponseEntity<Account> createAccount(
-            @RequestParam @Valid String firstName,
-            @RequestParam @Valid String lastName,
-            @RequestParam BigDecimal balancePln
-    ) {
-        Account result = accountService.createAccount(firstName, lastName, balancePln);
-
-        return ResponseEntity.created(URI.create("api/accounts/" + result.getId())).body(result);
+    public ResponseEntity<Account> createAccount(@RequestBody @Valid CreateAccountRequest createAccountRequest) {
+        AccountDto resultDto = AccountMapper.toDto(result);
+        return ResponseEntity.created(URI.create("/api/accounts/" + resultDto.getId())).body(resultDto);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Account> getAccount(@PathVariable Long id) {
         Account account = accountService.getAccount(id);
+        AccountDto accountDto = AccountMapper.toDto(account);
 
-        return ResponseEntity.ok(account);
+        return ResponseEntity.ok(accountDto);
     }
 
-    @PostMapping("/{accountId}/exchange/pln-to-usd")
-    public ResponseEntity<Account> exchangePlnToUsd(
-            @PathVariable @NotNull Long accountId,
-            @RequestParam BigDecimal amount
+    @PostMapping("/{accountId}/exchange")
+    public ResponseEntity exchangeCurrency(
+            @PathVariable Long accountId,
+            @RequestParam BigDecimal amount,
+            @RequestParam String fromCurrency,
+            @RequestParam String toCurrency
     ) {
-        Account result = accountService.exchangePlnToUsd(accountId, amount);
-
-        return ResponseEntity.accepted().body(result);
-    }
-
-    @PostMapping("/{accountId}/exchange/usd-to-pln")
-    public ResponseEntity<Account> exchangeUsdToPln(
-            @PathVariable @NotNull Long accountId,
-            @RequestParam BigDecimal amount
-    ) {
-        Account result = accountService.exchangeUsdToPln(accountId, amount);
-
-        return ResponseEntity.accepted().body(result);
+        Account result = accountService.exchangeCurrency(accountId, amount, fromCurrency, toCurrency);
+        AccountDto resultDto = AccountMapper.toDto(result);
+        return ResponseEntity.accepted().body(resultDto);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class NBPApiService {
+public class NBPApiService implements ExchangeRateProvider {
     private final Logger logger = LoggerFactory.getLogger(NBPApiService.class);
     private static final String NBP_API_URL = "http://api.nbp.pl/api/exchangerates/rates/A/USD";
     private static final String REQUEST_TRACE = "Requesting NBP rate for: [{}]";
@@ -32,34 +32,19 @@ public class NBPApiService {
         this.restTemplate = restTemplate;
     }
 
-    public BigDecimal getExchangeRate() {
-        if (ListUtils.isNotEmpty(handleNBPExchange().rates())) {
-            Optional<Rate> optionalRate = handleNBPExchange().rates().stream()
-                    .findFirst();
+    @Override
+    public BigDecimal getExchangeRate(String fromCurrency, String toCurrency) {
+        String url = String.format("http://api.nbp.pl/api/exchangerates/rates/A/%s", toCurrency);
+        URI uri = UriComponentsBuilder.fromHttpUrl(url).build().toUri();
+        RequestEntity requestEntity = RequestEntity.get(uri).headers(prepareHeaders()).build();
+        logger.trace("Requesting exchange rate from {} to {}", fromCurrency, toCurrency);
 
-            return optionalRate.map(rate -> new BigDecimal(rate.mid()))
-                    .orElse(BigDecimal.ZERO);
-        }
-
-        return BigDecimal.ZERO;
-    }
-
-    protected NBPResponse handleNBPExchange(){
-        URI uri = UriComponentsBuilder.fromHttpUrl(NBP_API_URL)
-                .build()
-                .toUri();
-        RequestEntity<Void> requestEntity = RequestEntity.get(uri)
-                .headers(prepareHeaders())
-                .build();
-        logger.trace(REQUEST_TRACE, NBP_API_URL);
-
-        ResponseEntity<NBPResponse> response = restTemplate.exchange(requestEntity, NBPResponse.class);
+        ResponseEntity response = restTemplate.exchange(requestEntity, NBPResponse.class);
 
         return Optional.ofNullable(response.getBody())
-                .orElseGet(() -> {
-                    logger.warn("Response body is null for URI: {}", uri);
-                    return supplyWithEmptyResponse();
-                });
+                .flatMap(body -> body.rates().stream().findFirst())
+                .map(rate -> new BigDecimal(rate.mid()))
+                .orElse(BigDecimal.ZERO);
     }
 
     private static HttpHeaders prepareHeaders() {

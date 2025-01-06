@@ -13,12 +13,10 @@ import java.math.BigDecimal;
 @Service
 public class AccountService {
     private final JpaAccountRepository jpaAccountRepository;
-    private final NBPApiService nbpApiService;
     private final ExchangeService exchangeService;
 
-    public AccountService(JpaAccountRepository jpaAccountRepository, NBPApiService nbpApiService, ExchangeService exchangeService) {
+    public AccountService(JpaAccountRepository jpaAccountRepository, ExchangeService exchangeService) {
         this.jpaAccountRepository = jpaAccountRepository;
-        this.nbpApiService = nbpApiService;
         this.exchangeService = exchangeService;
     }
 
@@ -42,18 +40,8 @@ public class AccountService {
     }
 
     @Transactional
-    public Account exchangePlnToUsd(Long accountId, BigDecimal amount) {
-        BigDecimal rate = nbpApiService.getExchangeRate();
-        Account account = exchangeService.exchangePlnToUsd(getAccount(accountId), amount, rate);
-
-        return jpaAccountRepository.save(account);
-    }
-
-    @Transactional
-    public Account exchangeUsdToPln(Long accountId, BigDecimal amount) {
-        BigDecimal rate = nbpApiService.getExchangeRate();
-        Account account = exchangeService.exchangeUsdToPln(getAccount(accountId), amount, rate);
-
+    public Account exchangeCurrency(Long accountId, BigDecimal amount, String fromCurrency, String toCurrency) {
+        Account account = exchangeService.exchange(getAccount(accountId), amount, fromCurrency, toCurrency);
         return jpaAccountRepository.save(account);
     }
 

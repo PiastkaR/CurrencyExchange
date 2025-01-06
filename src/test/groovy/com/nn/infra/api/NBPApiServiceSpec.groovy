@@ -53,20 +53,4 @@ class NBPApiServiceSpec extends Specification {
         exchangeRate == BigDecimal.ZERO
     }
 
-    def "should return zero if NBP response is null"() {
-        given:
-        restTemplate.exchange(_ as RequestEntity, _ as Class) >> new ResponseEntity<NBPResponse>(HttpStatus.OK)
-
-        when:
-        def exchange = nbpApiService.handleNBPExchange()
-
-        then:
-        exchange == new NBPResponseBuilder()
-                .withTable(Strings.EMPTY)
-                .withCurrency(Strings.EMPTY)
-                .withCodes(Strings.EMPTY)
-                .withRates(Collections.emptyList())
-                .build();
-    }
-
 }

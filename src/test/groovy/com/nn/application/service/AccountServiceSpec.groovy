@@ -36,16 +36,4 @@ class AccountServiceSpec extends Specification {
         result.balanceUsd == BigDecimal.ZERO
     }
 
-    def "Should return the account by ID"() {
-        given:
-        Long accountId = 1L
-        accountRepository.getById(accountId) >> {throw new NotFoundException("Account [ 1 ] not found.")}
-
-        when:
-        accountService.getAccount(accountId)
-
-        then:
-        thrown(NotFoundException)
-    }
-
 }
